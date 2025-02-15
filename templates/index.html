@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Анализ тональности</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-box" id="chat-box">
+            <div class="chat-message bot">Привет! Введите текст или загрузите Excel-файл.</div>
+        </div>
+        <div class="chat-input">
+            <textarea id="user-input" placeholder="Введите текст..." rows="2"></textarea>
+            <button onclick="sendMessage()">Отправить</button>
+        </div>
+        <div class="file-upload">
+            <label for="file-input" class="custom-file-upload">📂 Выбрать Excel</label>
+            <input type="file" id="file-input" accept=".xlsx">
+            <span id="file-name">Файл не выбран</span>
+            <button id="upload-btn" onclick="uploadFile()" disabled>📤 Отправить файл</button>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
