@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
+    // Отправка сообщения по нажатию Enter
     document.getElementById("user-input").addEventListener("keypress", function (event) {
         if (event.key === "Enter" && !event.shiftKey) {
             event.preventDefault();
@@ -6,16 +7,14 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    // Обработчик выбора файла
     document.getElementById("file-input").addEventListener("change", function (event) {
         let file = event.target.files[0];
-        let fileNameDisplay = document.getElementById("file-name");
         let uploadBtn = document.getElementById("upload-btn");
 
         if (file) {
-            fileNameDisplay.textContent = "Выбран файл: " + file.name;
             uploadBtn.disabled = false;
         } else {
-            fileNameDisplay.textContent = "Файл не выбран";
             uploadBtn.disabled = true;
         }
     });
@@ -45,11 +44,12 @@ function uploadFile() {
     let file = fileInput.files[0];
 
     if (!file) {
-        addMessage("bot", "⚠️ Файл не выбран.");
+        alert("Файл не выбран.");
         return;
     }
 
-    addMessage("user", `📂 Отправка файла: ${file.name}...`);
+    // Отображаем файл как сообщение от пользователя
+    addMessage("user", `📂 Отправлен файл: ${file.name}`);
 
     let formData = new FormData();
     formData.append("file", file);
@@ -63,11 +63,24 @@ function uploadFile() {
         if (data.error) {
             addMessage("bot", `❌ Ошибка: ${data.error}`);
         } else {
-            addMessage("bot", `✅ Файл загружен! <a href="${data.file_url}" download>🔗 Скачать результат</a>`);
+            addMessage("bot", `✅ Файл обработан! <a href="${data.file_url}" download>🔗 Скачать результат</a>`);
         }
+    });
+}
+
+function showFeedbackForm() {
+    document.getElementById("feedback-form").classList.toggle("hidden");
+}
+
+function sendCorrection(correctSentiment) {
+    fetch("/correct_feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message_id: "last_message", correct_sentiment: correctSentiment })
     })
-    .catch(() => {
-        addMessage("bot", "❌ Ошибка загрузки файла.");
+    .then(() => {
+        alert("Спасибо! Ваш отзыв учтен.");
+        document.getElementById("feedback-form").classList.add("hidden");
     });
 }
 

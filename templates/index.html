@@ -18,8 +18,15 @@
         <div class="file-upload">
             <label for="file-input" class="custom-file-upload">📂 Выбрать Excel</label>
             <input type="file" id="file-input" accept=".xlsx">
-            <span id="file-name">Файл не выбран</span>
             <button id="upload-btn" onclick="uploadFile()" disabled>📤 Отправить файл</button>
+            <button id="feedback-btn" onclick="showFeedbackForm()">📝 Тональность определена ошибочно</button>
+        </div>
+
+        <div id="feedback-form" class="feedback-form hidden">
+            <p>Какой должна быть правильная тональность?</p>
+            <button onclick="sendCorrection('positive')">😊 Положительная</button>
+            <button onclick="sendCorrection('neutral')">😐 Нейтральная</button>
+            <button onclick="sendCorrection('negative')">😞 Отрицательная</button>
         </div>
     </div>
     <script src="{{ url_for('static', filename='script.js') }}"></script>

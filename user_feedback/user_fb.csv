@@ -1,0 +1,8 @@
+import pandas as pd
+
+# Загружаем исправленные данные
+feedback_data = pd.read_csv("user_feedback.csv")
+
+# Подготавливаем тексты и исправленные метки
+texts = feedback_data["message_id"].tolist()
+labels = feedback_data["correct_sentiment"].tolist()
