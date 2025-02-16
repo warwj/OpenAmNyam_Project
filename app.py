@@ -7,7 +7,7 @@ import os
 app = Flask(__name__)
 
 # Пути к файлам
-MODEL_DIR = "D:/modelivan"  # Укажите корректный путь к модели
+MODEL_DIR = "model/my_trained_model3"
 FEEDBACK_FILE = "user_feedback.csv"
 UPLOAD_FOLDER = "uploads"
 RESULT_FOLDER = "results"
@@ -64,8 +64,11 @@ def upload():
 
         df = pd.read_excel(file_path, engine="openpyxl")
 
+        if 'MessageText' not in df.columns:
+            return jsonify({"error": "В файле отсутствует необходимый столбец 'MessageText'"}), 400
+
         # Анализируем каждый текст из первого столбца
-        for index, text in enumerate(df.iloc[:, 0]):
+        for index, text in enumerate(df['MessageText']):
             if isinstance(text, str) and text.strip():
                 inputs = tokenizer(text, return_tensors="pt", truncation=True, padding=True, max_length=128)
                 outputs = model(**inputs)
