@@ -3,6 +3,9 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification, Trai
 import torch
 import pandas as pd
 import os
+import re
+import bleach
+from time import perf_counter
 
 app = Flask(__name__)
 
@@ -19,13 +22,22 @@ os.makedirs(RESULT_FOLDER, exist_ok=True)
 # Загружаем предобученную модель
 tokenizer = AutoTokenizer.from_pretrained(MODEL_DIR)
 model = AutoModelForSequenceClassification.from_pretrained(MODEL_DIR)
+model.eval()
+device = torch.device("cpu")
+model.to(device)
 
-# Словарь для отображения числовых меток в текст
 sentiment_mapping = {
     0: "Отрицательный тон 😞",
     1: "Нейтральный тон 😐",
     2: "Положительный тон 😊"
 }
+
+def normalize_text(text: str) -> str:
+    text = text.lower()
+    text = bleach.clean(text, tags=[], strip=True)
+    text = re.sub(r'[#$%&*.,<=>@[\]^_`{|}~]', '', text)
+    # text = lemmatize_text_natasha(text)
+    return text
 
 @app.route("/")
 def index():
@@ -40,11 +52,18 @@ def analyze():
     if not text.strip():
         return jsonify({"sentiment": "Введите текст для анализа."})
 
+    text = normalize_text(text)
+
+    # start_time = perf_counter()
+
     # Токенизация и предсказание
     inputs = tokenizer(text, return_tensors="pt", truncation=True, padding=True, max_length=128)
     outputs = model(**inputs)
     pred = torch.argmax(outputs.logits, dim=1).item()
     sentiment = sentiment_mapping.get(pred, "Неизвестно")
+    # end_time = perf_counter()
+    # processing_time = end_time - start_time
+
 
     return jsonify({"sentiment": sentiment, "message_id": text})  # Используем текст как message_id
 
@@ -70,11 +89,15 @@ def upload():
         # Анализируем каждый текст из первого столбца
         for index, text in enumerate(df['MessageText']):
             if isinstance(text, str) and text.strip():
+                text = normalize_text(text)
+                start_time = perf_counter()
                 inputs = tokenizer(text, return_tensors="pt", truncation=True, padding=True, max_length=128)
                 outputs = model(**inputs)
                 pred = torch.argmax(outputs.logits, dim=1).item()
                 sentiment = sentiment_mapping.get(pred, "Неизвестно")
+                end_time = perf_counter()
                 df.loc[index, "Тональность"] = sentiment
+                df.loc[index, "Время обработки (сек)"] = end_time - start_time
 
         result_filename = f"results_{file.filename}"
         result_path = os.path.join(RESULT_FOLDER, result_filename)
