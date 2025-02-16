@@ -1,3 +1,4 @@
+/* Основные стили */
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
@@ -6,6 +7,7 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
+    transition: background 0.3s, color 0.3s;
 }
 
 .chat-container {
@@ -18,6 +20,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    transition: background 0.3s, color 0.3s;
 }
 
 .chat-box {
@@ -29,6 +32,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    transition: background 0.3s;
 }
 
 .chat-message {
@@ -84,10 +88,11 @@ button:hover {
     color: white;
 }
 
+/* Блок загрузки файлов */
 .file-upload {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 10px;
     margin-top: 10px;
 }
 
@@ -107,28 +112,20 @@ button:hover {
     background: #ddd;
 }
 
-#file-name {
-    display: none; /* Скрываем текст "Файл не выбран" */
-}
-
-#upload-btn, #feedback-btn {
+#upload-btn, #feedback-btn, #theme-toggle {
     background: #007bff;
     color: white;
     font-size: 14px;
     display: flex;
     align-items: center;
     gap: 5px;
-    padding: 10px 15px;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: background 0.3s;
 }
 
-#upload-btn:hover, #feedback-btn:hover {
+#upload-btn:hover, #feedback-btn:hover, #theme-toggle:hover {
     background: #0056b3;
 }
 
-
+/* Форма исправления тональности (изначально скрыта) */
 .feedback-form {
     display: flex;
     flex-direction: column;
@@ -139,6 +136,56 @@ button:hover {
     background: #f1f1f1;
 }
 
+/* Класс для скрытия формы */
 .hidden {
     display: none;
+}
+
+/* Темная тема */
+.dark-mode {
+    background-color: #1e1e1e;
+    color: white;
+}
+
+.dark-mode .chat-container {
+    background: #2c2c2c;
+    color: white;
+}
+
+.dark-mode .chat-box {
+    background: #3a3a3a;
+    border-color: #555;
+}
+
+.dark-mode .user {
+    background: #0a74da;
+}
+
+.dark-mode .bot {
+    background: #444;
+    color: white;
+}
+
+.dark-mode button {
+    background: #444;
+    color: white;
+}
+
+.dark-mode button:hover {
+    background: #666;
+}
+
+.dark-mode .custom-file-upload {
+    background: #444;
+    color: white;
+}
+
+.dark-mode .custom-file-upload:hover {
+    background: #666;
+}
+
+/* Темная тема для формы исправления */
+.dark-mode .feedback-form {
+    background: #444;
+    color: white;
 }

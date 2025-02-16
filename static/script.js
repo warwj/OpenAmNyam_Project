@@ -1,4 +1,13 @@
 document.addEventListener("DOMContentLoaded", function () {
+    // Проверяем, включена ли темная тема в localStorage
+    if (localStorage.getItem("dark-mode") === "enabled") {
+        document.body.classList.add("dark-mode");
+        document.getElementById("theme-toggle").textContent = "☀️"; // Меняем иконку
+    }
+
+    // Убеждаемся, что шкала исправления тональности скрыта при загрузке
+    document.getElementById("feedback-form").classList.add("hidden");
+
     // Отправка сообщения по нажатию Enter
     document.getElementById("user-input").addEventListener("keypress", function (event) {
         if (event.key === "Enter" && !event.shiftKey) {
@@ -19,6 +28,20 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
+
+// Переключение темной темы
+function toggleTheme() {
+    document.body.classList.toggle("dark-mode");
+
+    let themeButton = document.getElementById("theme-toggle");
+    if (document.body.classList.contains("dark-mode")) {
+        localStorage.setItem("dark-mode", "enabled");
+        themeButton.textContent = "☀️";
+    } else {
+        localStorage.setItem("dark-mode", "disabled");
+        themeButton.textContent = "🌙";
+    }
+}
 
 function sendMessage() {
     let userInput = document.getElementById("user-input");
@@ -48,7 +71,6 @@ function uploadFile() {
         return;
     }
 
-    // Отображаем файл как сообщение от пользователя
     addMessage("user", `📂 Отправлен файл: ${file.name}`);
 
     let formData = new FormData();
@@ -68,8 +90,10 @@ function uploadFile() {
     });
 }
 
+// Показать/скрыть форму исправления тональности
 function showFeedbackForm() {
-    document.getElementById("feedback-form").classList.toggle("hidden");
+    let feedbackForm = document.getElementById("feedback-form");
+    feedbackForm.classList.toggle("hidden");
 }
 
 function sendCorrection(correctSentiment) {
