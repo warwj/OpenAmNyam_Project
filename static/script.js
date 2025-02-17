@@ -43,6 +43,8 @@ function toggleTheme() {
     }
 }
 
+let lastMessageId = null;
+
 function sendMessage() {
     let userInput = document.getElementById("user-input");
     let message = userInput.value.trim();
@@ -59,6 +61,7 @@ function sendMessage() {
     .then(response => response.json())
     .then(data => {
         addMessage("bot", data.sentiment);
+        lastMessageId = data.message_id;
     });
 }
 
@@ -97,10 +100,15 @@ function showFeedbackForm() {
 }
 
 function sendCorrection(correctSentiment) {
+    if (!lastMessageId) {
+        alert("Ошибка: отсутствует идентификатор сообщения.");
+        return;
+    }
+
     fetch("/correct_feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message_id: "last_message", correct_sentiment: correctSentiment })
+        body: JSON.stringify({ message_id: lastMessageId, correct_sentiment: correctSentiment })
     })
     .then(() => {
         alert("Спасибо! Ваш отзыв учтен.");
