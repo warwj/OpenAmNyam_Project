@@ -17,12 +17,12 @@
         </div>
         <div class="file-upload">
             <label for="file-input" class="custom-file-upload">📂 Выбрать Excel</label>
-            <input type="file" id="file-input" accept=".xlsx">
-            <button id="upload-btn" onclick="uploadFile()" disabled>📤 Отправить файл</button>
-            <button id="feedback-btn" onclick="showFeedbackForm()">📝 Тональность определена ошибочно</button>
+            <input type="file" id="file-input" accept=".xlsx" style="display: none;">
+            <button id="upload-btn" onclick="uploadFile()" class="hidden">Отправить файл</button>
+            <button id="feedback-btn" onclick="showFeedbackForm()">Тональность определена ошибочно</button>
             <button id="theme-toggle" onclick="toggleTheme()">🌙</button>
         </div>
-
+        <div id="file-name" class="hidden">Загружен файл: <span id="file-name-text"></span></div>
 
         <div id="feedback-form" class="feedback-form hidden">
             <p>Какой должна быть правильная тональность?</p>

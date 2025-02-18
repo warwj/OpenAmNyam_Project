@@ -8,23 +8,33 @@ document.addEventListener("DOMContentLoaded", function () {
     // Убеждаемся, что шкала исправления тональности скрыта при загрузке
     document.getElementById("feedback-form").classList.add("hidden");
 
+    let fileInput = document.getElementById("file-input");
+    let uploadBtn = document.getElementById("upload-btn");
+    let fileNameDisplay = document.getElementById("file-name");
+    let fileNameText = document.getElementById("file-name-text");
+
+    // Гарантированно скрываем элементы при загрузке страницы
+    fileNameDisplay.style.display = "none";
+    uploadBtn.style.display = "none";
+
+    fileInput.addEventListener("change", function (event) {
+        let file = event.target.files[0];
+
+        if (file && file.name.endsWith(".xlsx")) {
+            fileNameText.textContent = file.name; // Устанавливаем текст
+            fileNameDisplay.style.display = "block"; // Показываем пометку
+            uploadBtn.style.display = "inline-block"; // Показываем кнопку
+        } else {
+            fileNameDisplay.style.display = "none"; // Скрываем пометку
+            uploadBtn.style.display = "none"; // Скрываем кнопку
+        }
+    });
+
     // Отправка сообщения по нажатию Enter
     document.getElementById("user-input").addEventListener("keypress", function (event) {
         if (event.key === "Enter" && !event.shiftKey) {
             event.preventDefault();
             sendMessage();
-        }
-    });
-
-    // Обработчик выбора файла
-    document.getElementById("file-input").addEventListener("change", function (event) {
-        let file = event.target.files[0];
-        let uploadBtn = document.getElementById("upload-btn");
-
-        if (file) {
-            uploadBtn.disabled = false;
-        } else {
-            uploadBtn.disabled = true;
         }
     });
 });
