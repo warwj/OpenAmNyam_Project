@@ -5,6 +5,8 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("theme-toggle").textContent = "☀️"; // Меняем иконку
     }
 
+    showBotInstructions();
+
     // Убеждаемся, что шкала исправления тональности скрыта при загрузке
     document.getElementById("feedback-form").classList.add("hidden");
 
@@ -30,6 +32,18 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    // Удаляем инструкцию после первого ввода сообщения
+    document.getElementById("user-input").addEventListener("keypress", function (event) {
+        if (document.getElementById("bot-instruction")) {
+            document.getElementById("bot-instruction").remove();
+        }
+    });
+
+    // Поддержка темной темы для инструкции
+    if (document.body.classList.contains("dark-mode")) {
+        updateInstructionTheme();
+    }
+
     // Отправка сообщения по нажатию Enter
     document.getElementById("user-input").addEventListener("keypress", function (event) {
         if (event.key === "Enter" && !event.shiftKey) {
@@ -38,6 +52,59 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
+
+// Функция для добавления инструкции при запуске
+function showBotInstructions() {
+    let chatContainer = document.querySelector(".chat-container");
+    let instructionDiv = document.createElement("div");
+    instructionDiv.id = "bot-instruction";
+    instructionDiv.innerHTML = `
+        <strong>Привет! Я ваш бот-помощник </strong><br>
+        Вот что я умею:<br>
+        ▫️ Определять тональность текста — просто напишите сообщение.<br>
+        ▫️ Обрабатывать Excel-файлы — загрузите файл с текстами, и я определю их тональность.<br>
+        ▫️ Переключать тёмную тему 🌙.<br><br>
+        <br>
+        Если тональность неверная, нажмите <em>"Тональность определена ошибочно"</em>.<br>
+        <strong>Чтобы начать, введите текст или загрузите файл!</strong><br>
+    `;
+
+     // Стилизация
+    instructionDiv.style.position = "absolute";
+    instructionDiv.style.top = "50%";
+    instructionDiv.style.left = "50%";
+    instructionDiv.style.transform = "translate(-50%, -50%)";
+    instructionDiv.style.width = "80%";
+    instructionDiv.style.maxWidth = "500px";
+    instructionDiv.style.background = "#f8f9fa";
+    instructionDiv.style.padding = "15px";
+    instructionDiv.style.borderRadius = "12px";
+    instructionDiv.style.boxShadow = "0px 4px 10px rgba(0, 0, 0, 0.1)";
+    instructionDiv.style.textAlign = "center";
+    instructionDiv.style.fontSize = "14px";
+    instructionDiv.style.zIndex = "1000";
+
+    // Подключаем стили в зависимости от темы
+    updateInstructionTheme(instructionDiv);
+
+    // Добавляем в контейнер
+    chatContainer.appendChild(instructionDiv);
+}
+
+// Функция обновления инструкции под темную тему
+function updateInstructionTheme(instructionDiv = document.getElementById("bot-instruction")) {
+    if (!instructionDiv) return;
+
+    if (document.body.classList.contains("dark-mode")) {
+        instructionDiv.style.background = "#333";
+        instructionDiv.style.color = "#ddd";
+        instructionDiv.style.boxShadow = "0px 4px 10px rgba(255, 255, 255, 0.1)";
+    } else {
+        instructionDiv.style.background = "#f8f9fa";
+        instructionDiv.style.color = "#000";
+        instructionDiv.style.boxShadow = "0px 4px 10px rgba(0, 0, 0, 0.1)";
+    }
+}
 
 // Переключение темной темы
 function toggleTheme() {
@@ -51,6 +118,9 @@ function toggleTheme() {
         localStorage.setItem("dark-mode", "disabled");
         themeButton.textContent = "🌙";
     }
+
+    // Обновляем тему инструкции, если она еще отображается
+    updateInstructionTheme();
 }
 
 let lastMessageId = null;
@@ -59,6 +129,11 @@ function sendMessage() {
     let userInput = document.getElementById("user-input");
     let message = userInput.value.trim();
     if (message === "") return;
+
+     // Удаляем инструкцию перед отправкой первого сообщения
+    if (document.getElementById("bot-instruction")) {
+        document.getElementById("bot-instruction").remove();
+    }
 
     addMessage("user", message);
     userInput.value = "";
@@ -82,6 +157,11 @@ function uploadFile() {
     if (!file) {
         alert("Файл не выбран.");
         return;
+    }
+
+    // Удаляем инструкцию перед отправкой первого файла
+    if (document.getElementById("bot-instruction")) {
+        document.getElementById("bot-instruction").remove();
     }
 
     addMessage("user", `📂 Отправлен файл: ${file.name}`);
