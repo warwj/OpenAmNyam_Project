@@ -10,7 +10,7 @@ from time import perf_counter
 app = Flask(__name__)
 
 # Пути к файлам
-MODEL_DIR = "model/my_trained_model3"
+MODEL_DIR = "model/model1"
 FEEDBACK_FILE = "user_feedback.csv"
 UPLOAD_FOLDER = "uploads"
 RESULT_FOLDER = "results"
